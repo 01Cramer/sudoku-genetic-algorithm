@@ -1,6 +1,5 @@
 #include "UserMode.h"
 
-
 UserMode::UserMode(float width, float height) : board_to_solve(rows, std::vector<int>(cols)) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {

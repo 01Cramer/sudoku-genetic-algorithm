@@ -1,6 +1,7 @@
 #include "DemoMode.h"
-#include <iostream>
+
 Demo::Demo(float width, float height) {
+
     if (!font.loadFromFile("Fonts/Alice-Regular.ttf")) {
         throw std::exception("Cant find font!");
     }

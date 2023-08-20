@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+
 class UserMode {
 public:
 	UserMode(float width, float height);

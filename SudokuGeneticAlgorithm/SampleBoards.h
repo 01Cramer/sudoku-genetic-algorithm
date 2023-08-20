@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+
 class SampleBoards {
 public:
 	int clear_board[9][9];
