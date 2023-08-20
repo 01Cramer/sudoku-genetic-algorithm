@@ -5,11 +5,11 @@
 
 
 Solver::Solver(float width, float height, int mode) {
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("Fonts/arial.ttf")) {
         throw std::exception("Cant find font!");
     }
 
-    if (!back_font.loadFromFile("Alice-Regular.ttf")) {
+    if (!back_font.loadFromFile("Fonts/Alice-Regular.ttf")) {
         throw std::exception("Cant find font!");
     }
 

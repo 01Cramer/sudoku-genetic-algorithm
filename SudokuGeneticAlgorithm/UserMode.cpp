@@ -8,7 +8,7 @@ UserMode::UserMode(float width, float height) : board_to_solve(rows, std::vector
         }
     }
 
-    if (!font.loadFromFile("Alice-Regular.ttf")) {
+    if (!font.loadFromFile("Fonts/Alice-Regular.ttf")) {
         throw std::exception("Cant find font!");
     }
 
@@ -38,7 +38,7 @@ UserMode :: ~UserMode() {
 int UserMode::draw_user_mode(sf::RenderWindow& window, int sudoku_board[9][9]) {
     sf::Font font;
 
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("Fonts/arial.ttf")) {
         throw std::exception("Can't find font!");
     }
 

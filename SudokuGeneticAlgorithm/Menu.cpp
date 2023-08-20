@@ -2,7 +2,7 @@
 
 
 Menu::Menu(float width, float height) {
-	if (!font.loadFromFile("Alice-Regular.ttf")) {
+	if (!font.loadFromFile("Fonts/Alice-Regular.ttf")) {
 		throw std::exception("Cant find font!");
 	}
 

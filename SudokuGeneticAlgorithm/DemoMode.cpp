@@ -1,7 +1,7 @@
 #include "DemoMode.h"
 #include <iostream>
 Demo::Demo(float width, float height) {
-    if (!font.loadFromFile("Alice-Regular.ttf")) {
+    if (!font.loadFromFile("Fonts/Alice-Regular.ttf")) {
         throw std::exception("Cant find font!");
     }
 
@@ -67,7 +67,7 @@ void Demo::draw(sf::RenderWindow& window) {
 
 void Demo::draw_mode(sf::RenderWindow& window, int sudoku_board[9][9]) {
     sf::Font font;
-    if (!font.loadFromFile("arial.ttf")) {
+    if (!font.loadFromFile("Fonts/arial.ttf")) {
         throw std::exception("Cant find font!");
     }
 
