@@ -1,5 +1,8 @@
 ## Sudoku solving genetic algorithm with GUI build in SFML.
-![](https://github.com/01Cramer/sudoku-genetic-algorithm/blob/main/sudoku_gif.gif)
+<p align="center">
+  <img src="sudoku_gif.gif" alt="animated" />
+</p>
+
 
 ## The algorithm works as follows:
 1. We start by selecting an initial population of solutions. These solutions are created by randomly selecting an empty cell on the Sudoku board, searching for possible numbers to insert into that cell, and then randomly choosing one of them. If a cell has no possible numbers to insert, it remains empty.
