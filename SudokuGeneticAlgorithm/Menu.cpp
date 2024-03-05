@@ -9,7 +9,7 @@ Menu::Menu(float width, float height) {
 	menu[0].setFont(font);
 	menu[0].setCharacterSize(64);
 	menu[0].setFillColor(sf::Color(111, 0, 255));
-	menu[0].setString("Solve Your's Sudoku");
+	menu[0].setString("Solve Your Sudoku");
 	menu[0].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS + 1) * 1));
 	sf::FloatRect textRect = menu[0].getLocalBounds();
 	menu[0].move(-textRect.width / 2.0f, 0); // SFML operates on floats
