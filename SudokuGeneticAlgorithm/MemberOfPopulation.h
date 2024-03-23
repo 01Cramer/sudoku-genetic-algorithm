@@ -1,7 +1,8 @@
 #pragma once
 #include <vector>
 
-struct MemberOfPopulation {
+class MemberOfPopulation {
+public:
     int rows = 9; // Board size 
     int cols = 9;
     int rank; // Rank is equal to 100 - number of fields left empty (with no moves left)
