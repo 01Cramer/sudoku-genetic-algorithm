@@ -48,7 +48,7 @@ void Solver::solve(std::vector<std::vector<int>> inboard) {
             break;
         }
 
-        if (generation == 250) { // Reset solution 
+        if (generation == 200) { // Reset solution 
             restarts++;
             population.clear();
             for (int i = 0; i < POPULATION_SIZE; i++) { // Generate first generation

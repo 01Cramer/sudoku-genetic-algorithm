@@ -1,4 +1,6 @@
 #include "UserMode.h"
+#include <iostream>
+#include <set>
 
 UserMode::UserMode(float width, float height) : board_to_solve(rows, std::vector<int>(cols)) {
     for (int i = 0; i < rows; i++) {
@@ -13,20 +15,30 @@ UserMode::UserMode(float width, float height) : board_to_solve(rows, std::vector
 
     sf::FloatRect textRect;
     user_mode[0].setFont(font);
-    user_mode[0].setCharacterSize(64);
+    user_mode[0].setCharacterSize(32);
     user_mode[0].setFillColor(sf::Color(111, 0, 255));
     user_mode[0].setString("Start Solving");
     user_mode[0].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 250.0f));
     textRect = user_mode[0].getLocalBounds();
     user_mode[0].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
 
+    
     user_mode[1].setFont(font);
-    user_mode[1].setCharacterSize(64);
+    user_mode[1].setCharacterSize(32);
     user_mode[1].setFillColor(sf::Color::Black);
-    user_mode[1].setString("Back");
-    user_mode[1].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 180.0f));
+    user_mode[1].setString("Load Board By Image");
+    user_mode[1].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 210.0f));
     textRect = user_mode[1].getLocalBounds();
     user_mode[1].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+    
+    user_mode[2].setFont(font);
+    user_mode[2].setCharacterSize(32);
+    user_mode[2].setFillColor(sf::Color::Black);
+    user_mode[2].setString("Back");
+    user_mode[2].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 170.0f));
+    textRect = user_mode[2].getLocalBounds();
+    user_mode[2].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+
     selected_item_index = 0;
 }
 
@@ -34,12 +46,23 @@ UserMode :: ~UserMode() {
 
 }
 
-int UserMode::draw_user_mode(sf::RenderWindow& window, int sudoku_board[9][9]) {
+int UserMode::draw_user_mode(sf::RenderWindow& window, int sudoku_board[9][9], std::string board_encoded) {
     sf::Font font;
 
     if (!font.loadFromFile("Fonts/arial.ttf")) {
         throw std::exception("Can't find font!");
     }
+    
+    if (board_encoded.size() == 81) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                sudoku_board[i][j] = board_encoded[i * 9 + j] - '0';
+                board_to_solve[i][j] = board_encoded[i * 9 + j] - '0';
+            }
+        }
+    }
+
+
 
     sf::Text text("", font, 20);
     text.setFillColor(sf::Color::Black);
@@ -199,7 +222,7 @@ int UserMode::draw_user_mode(sf::RenderWindow& window, int sudoku_board[9][9]) {
             window.draw(selectedCellHighlight);
         }
 
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 3; ++i) {
             window.draw(user_mode[i]);
         }
 
@@ -217,7 +240,7 @@ void UserMode::move_up() {
 }
 
 void UserMode::move_down() {
-    if (selected_item_index + 1 <= 1) {
+    if (selected_item_index + 1 <= 2) {
         user_mode[selected_item_index].setFillColor(sf::Color::Black);
         selected_item_index++;
         user_mode[selected_item_index].setFillColor(sf::Color(111, 0, 255));
@@ -246,4 +269,64 @@ UserMode::UserMode() : board_to_solve(rows, std::vector<int>(cols)) {
             board_to_solve[i][j] = 0;
         }
     }
+}
+
+bool isValidGroup(const std::vector<int>& group) {
+    std::set<int> seen;
+    for (int num : group) {
+        if (num != 0) {
+            if (seen.find(num) != seen.end()) {
+                return false; // Duplicated number found
+            }
+            seen.insert(num);
+        }
+    }
+    return true;
+}
+
+bool UserMode::validate_board() {
+    // Check rows
+    for (int i = 0; i < 9; ++i) {
+        if (!isValidGroup(board_to_solve[i])) {
+            return false;
+        }
+    }
+
+    // Check columns
+    for (int j = 0; j < 9; ++j) {
+        std::vector<int> column;
+        for (int i = 0; i < 9; ++i) {
+            column.push_back(board_to_solve[i][j]);
+        }
+        if (!isValidGroup(column)) {
+            return false;
+        }
+    }
+
+    // Check 3x3 sub-grids
+    for (int boxRow = 0; boxRow < 3; ++boxRow) {
+        for (int boxCol = 0; boxCol < 3; ++boxCol) {
+            std::vector<int> block;
+            for (int i = 0; i < 3; ++i) {
+                for (int j = 0; j < 3; ++j) {
+                    block.push_back(board_to_solve[boxRow * 3 + i][boxCol * 3 + j]);
+                }
+            }
+            if (!isValidGroup(block)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+int UserMode::display_warning_box() {
+    int msgboxID = MessageBox(
+        NULL,
+        L"Loaded board is not valid\nPlease make sure board is valid.",
+        L"Board is not valid",
+        MB_ICONWARNING | MB_OK
+    );
+
+    return msgboxID;
 }

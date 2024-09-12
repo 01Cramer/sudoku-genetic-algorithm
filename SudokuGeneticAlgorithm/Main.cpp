@@ -2,7 +2,9 @@
 #include "DemoMode.h"
 #include "Solver.h"
 #include "UserMode.h"
+#include "LoadByImage.h"
 #include "SampleBoards.h"
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include<thread>
 
@@ -18,6 +20,8 @@ sf::RenderWindow window(sf::VideoMode(800, 600), "Sudoku Solver");
 const int x = window.getSize().x;
 const int y = window.getSize().y;
 
+std::string python_script = "sudoku.py";
+
 std::thread solving_thread;
 
 int main() {
@@ -27,13 +31,17 @@ int main() {
 		Menu menu(x, y);
 		Demo demo(x, y);
 		UserMode user_mode(x, y);
+		LoadByImage load_image(x, y);
+		
 
 		Solver solver_easy_mode(x, y, 1);
 		Solver solver_hard_mode(x, y, 2);
 		Solver solver_user_mode(x, y, 3);
 		bool thread_flag = false;
+		bool board_is_valid = true;
 
 		std::string view = "menu";
+		std::string encoded_sudoku_board = "";
 
 		while (window.isOpen()) {
 			sf::Event event;
@@ -57,6 +65,10 @@ int main() {
 							menu.move_up();
 						}
 
+						else if (view == "load_by_image") {
+							load_image.move_up();
+						}
+
 						else if (view == "demonstration_menu") {
 							bool demo_menu = true;
 							demo.move_up(demo_menu);
@@ -76,6 +88,10 @@ int main() {
 					else if (event.key.code == sf::Keyboard::Down) { // Moving Down
 						if (view == "menu") {
 							menu.move_down();
+						}
+
+						else if (view == "load_by_image") {
+							load_image.move_down();
 						}
 
 						else if (view == "demonstration_menu") {
@@ -131,6 +147,24 @@ int main() {
 
 							case(3): {
 								view = "menu";
+								break;
+							}
+							}
+						}
+
+						else if (view == "load_by_image") {
+							int load_by_image_action = load_image.get_pressed_item();
+							switch (load_by_image_action) {
+							case(0): {
+								load_image.display_processing_information();
+								encoded_sudoku_board = load_image.execute_python_script(python_script, load_image.path_to_image);
+								load_image.clear_path_to_image();
+								view = "user_mode";
+								break;
+								}
+							case(1): {
+								load_image.clear_path_to_image();
+								view = "user_mode";
 								break;
 							}
 							}
@@ -194,7 +228,25 @@ int main() {
 							solving_thread.join();
 						}
 					}
-
+				}
+				case(sf::Event::TextEntered): {
+					if (view == "load_by_image") {
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && event.key.code == sf::Keyboard::V) {
+							std::string clipboard_text = load_image.get_path_from_clipboard();
+							load_image.path_to_image = clipboard_text;
+							load_image.input_path.setString(load_image.path_to_image);
+							load_image.input_path.setCharacterSize(14);
+							sf::FloatRect inputRect = load_image.input_path.getLocalBounds();
+							load_image.input_path.setPosition(sf::Vector2f(load_image.get_width() / 2, load_image.get_height() / 2));
+							load_image.input_path.move(-inputRect.width / 2.0f, 0);
+						}
+						else if (event.key.code == sf::Keyboard::Backspace) {
+							if (!load_image.path_to_image.empty()) {
+								load_image.clear_path_to_image();
+							}
+						}
+					}
+					break;
 				}
 				}
 			}
@@ -227,12 +279,23 @@ int main() {
 				solver_hard_mode.draw_solution(window);
 			}
 
+			else if (view == "load_by_image") {
+				load_image.draw(window);
+			}
+
 			else if (view == "user_mode") {
 				sample_boards.clear();
 
-				int response = user_mode.draw_user_mode(window, sample_boards.clear_board);
+				int response = user_mode.draw_user_mode(window, sample_boards.clear_board, encoded_sudoku_board);
+				
+				if (user_mode.validate_board()) {
+					board_is_valid = true;
+				}
+				else {
+					board_is_valid = false;
+				}
 
-				if (response == 0) { // Solve
+				if (response == 0 and board_is_valid) { // Solve
 					std::vector<std::vector<int>> board = user_mode.get_board();
 					MemberOfPopulation member;
 					member.set_board(board);
@@ -241,11 +304,20 @@ int main() {
 					solving_thread = start_thread(solver_user_mode, board);
 					thread_flag = true;
 
+					encoded_sudoku_board = "";
 					view = "solving_user_mode";
 				}
+				else if (response == 0 and !board_is_valid) {
+					user_mode.display_warning_box();
+					continue;
+				}
+				else if (response == 1){
+					view = "load_by_image";
 
-				else { // Back
+				}
+				else {
 					user_mode.reset_board();
+					encoded_sudoku_board = "";
 					view = "menu";
 				}
 			}
