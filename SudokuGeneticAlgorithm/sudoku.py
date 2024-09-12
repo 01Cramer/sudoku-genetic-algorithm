@@ -26,7 +26,7 @@ from inference_sdk import InferenceHTTPClient
 
 CLIENT = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",
-    api_key="HFOTfZvCBxXAuPQhtb1L"
+    api_key="" # Put your API key here
 )
 
 class_to_digit = {
