@@ -2,7 +2,7 @@
 #include <iostream>
 #include <set>
 
-UserMode::UserMode(float width, float height) : board_to_solve(rows, std::vector<int>(cols)) {
+UserMode::UserMode(float width, float height, uint8_t number_of_items) : board_to_solve(rows, std::vector<int>(cols)), Controller(number_of_items) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             board_to_solve[i][j] = 0;
@@ -14,30 +14,30 @@ UserMode::UserMode(float width, float height) : board_to_solve(rows, std::vector
     }
 
     sf::FloatRect textRect;
-    user_mode[0].setFont(font);
-    user_mode[0].setCharacterSize(32);
-    user_mode[0].setFillColor(sf::Color(111, 0, 255));
-    user_mode[0].setString("Start Solving");
-    user_mode[0].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 250.0f));
-    textRect = user_mode[0].getLocalBounds();
-    user_mode[0].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+    menu[0].setFont(font);
+    menu[0].setCharacterSize(32);
+    menu[0].setFillColor(sf::Color(111, 0, 255));
+    menu[0].setString("Start Solving");
+    menu[0].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 250.0f));
+    textRect = menu[0].getLocalBounds();
+    menu[0].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
 
     
-    user_mode[1].setFont(font);
-    user_mode[1].setCharacterSize(32);
-    user_mode[1].setFillColor(sf::Color::Black);
-    user_mode[1].setString("Load Board By Image");
-    user_mode[1].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 210.0f));
-    textRect = user_mode[1].getLocalBounds();
-    user_mode[1].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+    menu[1].setFont(font);
+    menu[1].setCharacterSize(32);
+    menu[1].setFillColor(sf::Color::Black);
+    menu[1].setString("Load Board By Image");
+    menu[1].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 210.0f));
+    textRect = menu[1].getLocalBounds();
+    menu[1].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
     
-    user_mode[2].setFont(font);
-    user_mode[2].setCharacterSize(32);
-    user_mode[2].setFillColor(sf::Color::Black);
-    user_mode[2].setString("Back");
-    user_mode[2].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 170.0f));
-    textRect = user_mode[2].getLocalBounds();
-    user_mode[2].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
+    menu[2].setFont(font);
+    menu[2].setCharacterSize(32);
+    menu[2].setFillColor(sf::Color::Black);
+    menu[2].setString("Back");
+    menu[2].setPosition(sf::Vector2f(width / 2.0f, height / 2.0f - 170.0f));
+    textRect = menu[2].getLocalBounds();
+    menu[2].setOrigin(textRect.width / 2.0f, textRect.height / 2.0f);
 
     selected_item_index = 0;
 }
@@ -223,32 +223,11 @@ int UserMode::draw_user_mode(sf::RenderWindow& window, int sudoku_board[9][9], s
         }
 
         for (int i = 0; i < 3; ++i) {
-            window.draw(user_mode[i]);
+            window.draw(menu[i]);
         }
 
         window.display();
     }
-}
-
-
-void UserMode::move_up() {
-    if (selected_item_index - 1 >= 0) {
-        user_mode[selected_item_index].setFillColor(sf::Color::Black);
-        selected_item_index--;
-        user_mode[selected_item_index].setFillColor(sf::Color(111, 0, 255));
-    }
-}
-
-void UserMode::move_down() {
-    if (selected_item_index + 1 <= 2) {
-        user_mode[selected_item_index].setFillColor(sf::Color::Black);
-        selected_item_index++;
-        user_mode[selected_item_index].setFillColor(sf::Color(111, 0, 255));
-    }
-}
-
-int UserMode::get_pressed_item() {
-    return selected_item_index;
 }
 
 std::vector<std::vector<int>> UserMode::get_board() {
@@ -263,7 +242,7 @@ void UserMode::reset_board() {
     }
 }
 
-UserMode::UserMode() : board_to_solve(rows, std::vector<int>(cols)) {
+UserMode::UserMode() : board_to_solve(rows, std::vector<int>(cols)), Controller(){
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             board_to_solve[i][j] = 0;

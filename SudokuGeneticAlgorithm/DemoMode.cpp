@@ -1,42 +1,42 @@
 #include "DemoMode.h"
 
-Demo::Demo(float width, float height) {
+Demo::Demo(float width, float height, uint8_t number_of_items) : Controller(number_of_items) {
 
     if (!font.loadFromFile("Fonts/Alice-Regular.ttf")) {
         throw std::exception("Cant find font!");
     }
 
-    demo[0].setFont(font);
-    demo[0].setCharacterSize(78);
-    demo[0].setFillColor(sf::Color::Black);
-    demo[0].setString("Mode:");
-    demo[0].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS_DEMO + 1) * 1 - 70));
-    sf::FloatRect textRect = demo[0].getLocalBounds();
-    demo[0].move(-textRect.width / 2.0f, 0);
+    menu[0].setFont(font);
+    menu[0].setCharacterSize(78);
+    menu[0].setFillColor(sf::Color::Black);
+    menu[0].setString("Mode:");
+    menu[0].setPosition(sf::Vector2f(width / 2, height / (number_of_items + 1) * 1 - 70));
+    sf::FloatRect textRect = menu[0].getLocalBounds();
+    menu[0].move(-textRect.width / 2.0f, 0);
 
-    demo[1].setFont(font);
-    demo[1].setCharacterSize(64);
-    demo[1].setFillColor(sf::Color(111, 0, 255));
-    demo[1].setString("Easy");
-    demo[1].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS_DEMO + 1) * 2 - 70));
-    textRect = demo[1].getLocalBounds();
-    demo[1].move(-textRect.width / 2.0f, 0);
+    menu[1].setFont(font);
+    menu[1].setCharacterSize(64);
+    menu[1].setFillColor(sf::Color(111, 0, 255));
+    menu[1].setString("Easy");
+    menu[1].setPosition(sf::Vector2f(width / 2, height / (number_of_items + 1) * 2 - 70));
+    textRect = menu[1].getLocalBounds();
+    menu[1].move(-textRect.width / 2.0f, 0);
 
-    demo[2].setFont(font);
-    demo[2].setCharacterSize(64);
-    demo[2].setFillColor(sf::Color::Black);
-    demo[2].setString("Hard");
-    demo[2].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS_DEMO + 1) * 3 - 70));
-    textRect = demo[2].getLocalBounds();
-    demo[2].move(-textRect.width / 2.0f, 0);
+    menu[2].setFont(font);
+    menu[2].setCharacterSize(64);
+    menu[2].setFillColor(sf::Color::Black);
+    menu[2].setString("Hard");
+    menu[2].setPosition(sf::Vector2f(width / 2, height / (number_of_items + 1) * 3 - 70));
+    textRect = menu[2].getLocalBounds();
+    menu[2].move(-textRect.width / 2.0f, 0);
 
-    demo[3].setFont(font);
-    demo[3].setCharacterSize(64);
-    demo[3].setFillColor(sf::Color::Black);
-    demo[3].setString("Back To Main Menu");
-    demo[3].setPosition(sf::Vector2f(width / 2, height / (MAX_NUMBER_OF_ITEMS_DEMO + 1) * 4 - 70));
-    textRect = demo[3].getLocalBounds();
-    demo[3].move(-textRect.width / 2.0f, 0);
+    menu[3].setFont(font);
+    menu[3].setCharacterSize(64);
+    menu[3].setFillColor(sf::Color::Black);
+    menu[3].setString("Back To Main Menu");
+    menu[3].setPosition(sf::Vector2f(width / 2, height / (number_of_items + 1) * 4 - 70));
+    textRect = menu[3].getLocalBounds();
+    menu[3].move(-textRect.width / 2.0f, 0);
 
     solve_or_back[0].setFont(font);
     solve_or_back[0].setCharacterSize(64);
@@ -61,8 +61,8 @@ Demo::Demo(float width, float height) {
 Demo :: ~Demo() {}
 
 void Demo::draw(sf::RenderWindow& window) {
-    for (int i = 0; i < MAX_NUMBER_OF_ITEMS_DEMO; i++) {
-        window.draw(demo[i]);
+    for (int i = 0; i < number_of_items; i++) {
+        window.draw(menu[i]);
     }
 }
 
@@ -149,9 +149,9 @@ void Demo::draw_mode(sf::RenderWindow& window, int sudoku_board[9][9]) {
 void Demo::move_up(bool modes) {
     if (modes) {
         if (selected_item_index - 1 >= 1) {
-            demo[selected_item_index].setFillColor(sf::Color::Black);
+            menu[selected_item_index].setFillColor(sf::Color::Black);
             selected_item_index--;
-            demo[selected_item_index].setFillColor(sf::Color(111, 0, 255));
+            menu[selected_item_index].setFillColor(sf::Color(111, 0, 255));
         }
     }
 
@@ -167,9 +167,9 @@ void Demo::move_up(bool modes) {
 void Demo::move_down(bool modes) {
     if (modes) {
         if (selected_item_index + 1 <= 3) {
-            demo[selected_item_index].setFillColor(sf::Color::Black);
+            menu[selected_item_index].setFillColor(sf::Color::Black);
             selected_item_index++;
-            demo[selected_item_index].setFillColor(sf::Color(111, 0, 255));
+            menu[selected_item_index].setFillColor(sf::Color(111, 0, 255));
         }
     }
 
@@ -180,10 +180,6 @@ void Demo::move_down(bool modes) {
             solve_or_back[action].setFillColor(sf::Color(111, 0, 255));
         }
     }
-}
-
-int Demo::get_pressed_item() {
-    return selected_item_index;
 }
 
 int Demo::get_action() {

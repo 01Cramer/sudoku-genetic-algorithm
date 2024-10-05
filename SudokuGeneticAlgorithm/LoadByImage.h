@@ -1,18 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Controller.h"
 #include <string>
 
-class LoadByImage {
+class LoadByImage : public Controller {
 public:
-	LoadByImage(float width, float height);
+	LoadByImage(float width, float height, uint8_t number_of_items);
 	~LoadByImage();
 
 	void draw(sf::RenderWindow& window);
 
-	// Navigating functions
-	void move_up();
-	void move_down();
-	int get_pressed_item();
 	std::string get_path_from_clipboard();
 
 	void clear_path_to_image();
@@ -27,10 +24,7 @@ public:
 	float get_height();
 
 private:
-	int selected_item_index;
-
 	sf::Font font;
-	sf::Text load_by_image[2];
 	float m_width;
 	float m_height;
 };

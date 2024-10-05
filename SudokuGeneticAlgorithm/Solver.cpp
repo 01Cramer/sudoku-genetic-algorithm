@@ -2,8 +2,6 @@
 #include <algorithm>
 #include <random>
 
-
-
 Solver::Solver(float width, float height, int mode) {
     if (!font.loadFromFile("Fonts/arial.ttf")) {
         throw std::exception("Cant find font!");
@@ -192,4 +190,10 @@ void Solver::start_user_mode() {
 
     should_stop = false;
 
+}
+
+std::thread start_calculating(Solver& solver, std::vector<std::vector<int>> in_board) {
+    std::thread solve(&Solver::solve, &solver, in_board);
+
+    return solve;
 }

@@ -6,43 +6,36 @@
 #include "SampleBoards.h"
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include<thread>
-
-
-std::thread start_thread(Solver& solver, std::vector<std::vector<int>> in_board) {
-	std::thread solve(&Solver::solve, &solver, in_board);
-
-	return solve;
-}
-
 
 sf::RenderWindow window(sf::VideoMode(800, 600), "Sudoku Solver");
 const int x = window.getSize().x;
 const int y = window.getSize().y;
+const uint8_t menu_number_of_items = 3;
+const uint8_t user_mode_number_of_items = 3;
+const uint8_t load_by_image_number_of_itmes = 2;
+const uint8_t demo_mode_number_of_itmes = 4;
 
-std::string python_script = "sudoku.py";
+const std::string python_script = "sudoku.py";
+std::string view = "menu";
+std::string encoded_sudoku_board = "";
+
+bool thread_flag = false;
+bool board_is_valid = true;
+
+SampleBoards sample_boards;
+Menu menu(x, y, menu_number_of_items);
+Demo demo(x, y, demo_mode_number_of_itmes);
+UserMode user_mode(x, y, user_mode_number_of_items);
+LoadByImage load_image(x, y, load_by_image_number_of_itmes);
+
+Solver solver_easy_mode(x, y, 1);
+Solver solver_hard_mode(x, y, 2);
+Solver solver_user_mode(x, y, 3);
 
 std::thread solving_thread;
 
 int main() {
 	try {
-		SampleBoards sample_boards;
-
-		Menu menu(x, y);
-		Demo demo(x, y);
-		UserMode user_mode(x, y);
-		LoadByImage load_image(x, y);
-		
-
-		Solver solver_easy_mode(x, y, 1);
-		Solver solver_hard_mode(x, y, 2);
-		Solver solver_user_mode(x, y, 3);
-		bool thread_flag = false;
-		bool board_is_valid = true;
-
-		std::string view = "menu";
-		std::string encoded_sudoku_board = "";
-
 		while (window.isOpen()) {
 			sf::Event event;
 
@@ -112,7 +105,7 @@ int main() {
 
 					else if (event.key.code == sf::Keyboard::Enter) { // Selecting 
 						if (view == "menu") {
-							int menu_action = menu.get_pressed_item();
+							uint8_t menu_action = menu.get_pressed_item();
 
 							switch (menu_action) {
 							case(0): {
@@ -175,7 +168,7 @@ int main() {
 							switch (demo_action) {
 							case(0): {
 								solver_easy_mode.start_demo();
-								solving_thread = start_thread(solver_easy_mode, sample_boards.easy_vector);
+								solving_thread = start_calculating(solver_easy_mode, sample_boards.easy_vector);
 								thread_flag = true;
 								view = "solving_demo_easy_mode";
 								break;
@@ -200,7 +193,7 @@ int main() {
 							switch (demo_action) {
 							case(0): {
 								solver_hard_mode.start_demo();
-								solving_thread = start_thread(solver_hard_mode, sample_boards.hard_vector);
+								solving_thread = start_calculating(solver_hard_mode, sample_boards.hard_vector);
 								thread_flag = true;
 								view = "solving_demo_hard_mode";
 								break;
@@ -301,7 +294,7 @@ int main() {
 					member.set_board(board);
 					solver_user_mode.set_best(member);
 					solver_user_mode.start_user_mode();
-					solving_thread = start_thread(solver_user_mode, board);
+					solving_thread = start_calculating(solver_user_mode, board);
 					thread_flag = true;
 
 					encoded_sudoku_board = "";

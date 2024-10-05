@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "MemberOfPopulation.h"
 #include <atomic>
+#include <thread>
 
 class Solver {
 public:
@@ -25,3 +26,6 @@ public:
 		sf::Font back_font;
 		sf::Text solver_back[1];
 };
+
+// Computational thread
+std::thread start_calculating(Solver& solver, std::vector<std::vector<int>> in_board);

@@ -6,26 +6,26 @@
 #include <sstream>
 #include <Windows.h>
 
-LoadByImage::LoadByImage(float width, float height) {
+LoadByImage::LoadByImage(float width, float height, uint8_t number_of_items) : Controller(number_of_items) {
 	if (!font.loadFromFile("Fonts/Alice-Regular.ttf")) {
 		throw std::exception("Cant find font!");
 	}
 
-	load_by_image[0].setFont(font);
-	load_by_image[0].setCharacterSize(64);
-	load_by_image[0].setFillColor(sf::Color(111, 0, 255));
-	load_by_image[0].setString("Confirm Path Of Image");
-	load_by_image[0].setPosition(sf::Vector2f(width / 2, height / 6));
-	sf::FloatRect textRect = load_by_image[0].getLocalBounds();
-	load_by_image[0].move(-textRect.width / 2.0f, 0);
+	menu[0].setFont(font);
+	menu[0].setCharacterSize(64);
+	menu[0].setFillColor(sf::Color(111, 0, 255));
+	menu[0].setString("Confirm Path Of Image");
+	menu[0].setPosition(sf::Vector2f(width / 2, height / 6));
+	sf::FloatRect textRect = menu[0].getLocalBounds();
+	menu[0].move(-textRect.width / 2.0f, 0);
 
-	load_by_image[1].setFont(font);
-	load_by_image[1].setCharacterSize(64);
-	load_by_image[1].setFillColor(sf::Color::Black);
-	load_by_image[1].setString("Back");
-	load_by_image[1].setPosition(sf::Vector2f(width / 2, height /  3));
-	textRect = load_by_image[1].getLocalBounds();
-	load_by_image[1].move(-textRect.width / 2.0f, 0);
+	menu[1].setFont(font);
+	menu[1].setCharacterSize(64);
+	menu[1].setFillColor(sf::Color::Black);
+	menu[1].setString("Back");
+	menu[1].setPosition(sf::Vector2f(width / 2, height /  3));
+	textRect = menu[1].getLocalBounds();
+	menu[1].move(-textRect.width / 2.0f, 0);
 
 	input_path.setFont(font);
 	input_path.setCharacterSize(20);
@@ -45,30 +45,10 @@ LoadByImage :: ~LoadByImage() {}
 
 void LoadByImage::draw(sf::RenderWindow& window) {
 	for (int i = 0; i < 2; i++) {
-		window.draw(load_by_image[i]);
+		window.draw(menu[i]);
 	}
 
 	window.draw(input_path);
-}
-
-void LoadByImage::move_up() {
-	if (selected_item_index - 1 >= 0) {
-		load_by_image[selected_item_index].setFillColor(sf::Color::Black);
-		selected_item_index--;
-		load_by_image[selected_item_index].setFillColor(sf::Color(111, 0, 255));
-	}
-}
-
-void LoadByImage::move_down() {
-	if (selected_item_index + 1 <= 1) {
-		load_by_image[selected_item_index].setFillColor(sf::Color::Black);
-		selected_item_index++;
-		load_by_image[selected_item_index].setFillColor(sf::Color(111, 0, 255));
-	}
-}
-
-int LoadByImage::get_pressed_item() {
-	return selected_item_index;
 }
 
 void LoadByImage::clear_path_to_image() {
@@ -108,8 +88,6 @@ std::string LoadByImage::execute_python_script(const std::string& script_path, c
 	std::ofstream temp_file(temp_file_path);
 	temp_file.close();
 
-
-	
 	std::string command = "python " + script_path + " " + image_path;
 
 	std::system(command.c_str());
